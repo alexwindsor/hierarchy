@@ -29,6 +29,7 @@ class SetAndGetDbData extends DbConn {
     $page = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $stmt = null;
 
+    if (!isset($page[0])) header("Location: index.php");
     $page = $page[0];
 
     return $page;
