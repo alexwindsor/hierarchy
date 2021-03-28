@@ -1,31 +1,16 @@
--- phpMyAdmin SQL Dump
--- version 5.0.2
--- https://www.phpmyadmin.net/
---
--- Host: localhost
--- Generation Time: Feb 25, 2021 at 08:46 PM
--- Server version: 10.1.48-MariaDB-0+deb9u1
--- PHP Version: 7.3.27-2+0~20210213.78+debian9~1.gbpc9cf23
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+CREATE DATABASE IF NOT EXISTS `hierarchy`;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
---
--- Database: `hierarchy`
---
+USE `hierarchy`;
 
 DELIMITER $$
---
--- Procedures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `hierarchy` (IN `id` INT UNSIGNED, IN `title` VARCHAR(128), IN `text` TEXT, IN `child_title` VARCHAR(128), IN `new_parent_id` INT UNSIGNED)  NO SQL
+
+CREATE PROCEDURE `hierarchy` (IN `id` INT UNSIGNED, IN `title` VARCHAR(128), IN `text` TEXT, IN `child_title` VARCHAR(128), IN `new_parent_id` INT UNSIGNED)  NO SQL
 BEGIN
 
 
@@ -34,8 +19,6 @@ BEGIN
 -- ===============================================
 
 -- set and get all the data for the page according to data received
-
-
 -- if we don't even have a page id then we just send back the first page in the hierarchy
 IF `id` = 0 THEN
   SELECT MIN(`hierarchy`.`id`) as id, `hierarchy`.`title`, `hierarchy`.`text` FROM `hierarchy`;
@@ -77,11 +60,6 @@ END$$
 
 DELIMITER ;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `hierarchy`
---
 
 CREATE TABLE `hierarchy` (
   `id` int(11) NOT NULL,
@@ -90,9 +68,6 @@ CREATE TABLE `hierarchy` (
   `text` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Dumping data for table `hierarchy`
---
 
 INSERT INTO `hierarchy` (`id`, `parent_id`, `title`, `text`) VALUES
 (1, 0, 'Home page', 'This is the home page of the entire website.\r\n\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
@@ -121,26 +96,10 @@ INSERT INTO `hierarchy` (`id`, `parent_id`, `title`, `text`) VALUES
 (71, 69, 'ferrari', NULL);
 
 --
--- Indexes for dumped tables
---
-
---
--- Indexes for table `hierarchy`
---
 ALTER TABLE `hierarchy`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `hierarchy`
---
 ALTER TABLE `hierarchy`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

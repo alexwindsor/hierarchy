@@ -3,7 +3,7 @@
 class DbConn {
 
   private $hostname = "localhost";
-  private $user = "root";
+  private $user = "alex";
   private $pass = "street";
   private $db = "hierarchy";
   public $conn;
