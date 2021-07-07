@@ -109,7 +109,7 @@ class MakeNavigation {
       $this->branch .= $this->branch_array[$i][1];
       $this->id == $this->branch_array[$i][0] ? $this->branch .= "</b>" : $this->branch .= "</a>";
       if ($this->id !== $this->branch_array[$i][0]) {
-        $this->branch .= " / ";
+        $this->branch .= "&nbsp;/&nbsp;";
       }
     }
 
@@ -117,6 +117,19 @@ class MakeNavigation {
     $this->parent_id = $this->branch_array[count($this->branch_array) - 2][0] ?? 0;
 
   } // end of function makeNavBranch
+
+
+  public function text_to_html($text) {
+
+    // make a preg match thing that makes html links out of [[https://www.bbc.co.uk/news|BBC News]] here
+
+    $text = htmlentities($text);
+    $text = str_replace("\n", "<br>", $text);
+
+
+    return $text;
+
+  }
 
 
 } // end of class MakeNavigation

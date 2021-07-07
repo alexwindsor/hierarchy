@@ -28,5 +28,3 @@
 <h1>Hierarchy Template Website</h1>
 
 <br><br>
-
-<span style="font-size:150%;"><?php echo $makeNavigation->branch; ?></span>

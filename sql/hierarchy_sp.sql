@@ -1,5 +1,6 @@
 BEGIN
 
+-- This is the multipurpose stored procedure used to insert, update data to the database and get the data needed to display the next page, all in one call
 
 -- incoming variables:
 -- id, title, text, child_title, parent_id, new_parent_id
