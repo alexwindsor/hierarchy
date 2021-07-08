@@ -1,30 +1,46 @@
-
+-- phpMyAdmin SQL Dump
+-- version 4.9.5deb2
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: Jul 08, 2021 at 07:31 AM
+-- Server version: 10.3.29-MariaDB-0ubuntu0.20.04.1
+-- PHP Version: 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-CREATE DATABASE IF NOT EXISTS `hierarchy`;
 
-USE `hierarchy`;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `hierarchy`
+--
 
 DELIMITER $$
-
-CREATE PROCEDURE `hierarchy` (IN `id` INT UNSIGNED, IN `title` VARCHAR(128), IN `text` TEXT, IN `child_title` VARCHAR(128), IN `new_parent_id` INT UNSIGNED)  NO SQL
+--
+-- Procedures
+--
+CREATE DEFINER=`alex`@`localhost` PROCEDURE `hierarchy` (IN `id` INT UNSIGNED, IN `title` VARCHAR(128), IN `text` TEXT, IN `child_title` VARCHAR(128), IN `new_parent_id` INT UNSIGNED)  NO SQL
 BEGIN
 
 
--- incoming variables:
--- id, title, text, child_title, parent_id, new_parent_id
--- ===============================================
 
--- set and get all the data for the page according to data received
--- if we don't even have a page id then we just send back the first page in the hierarchy
+
+
+
+
+
 IF `id` = 0 THEN
   SELECT MIN(`hierarchy`.`id`) as id, `hierarchy`.`title`, `hierarchy`.`text` FROM `hierarchy`;
 END IF;
 
--- if we have data to update the page that the user was on
+
 IF `title` != "" AND `id` > 0 THEN
 
   IF `new_parent_id` > 0 THEN
@@ -35,21 +51,21 @@ IF `title` != "" AND `id` > 0 THEN
 
 END IF;
 
--- if the user added a new subpage to the page that they were on
+
 IF `child_title` != "" AND `id` > 0 THEN
-  -- then we insert the child_title into the new subpage and..
+  
   INSERT INTO `hierarchy` (`hierarchy`.`parent_id`, `hierarchy`.`title`) VALUES (`id`, `child_title`);
-  -- ..and select (return) the id of the newly created row, the title received and set the flag to 1 to indicate that later php scripts need to update the hierarchy tree
+  
   SELECT LAST_INSERT_ID() AS id, `child_title` AS title, "" AS text, 1 as `update_hierarchy`;
 END IF;
 
--- if post data was sent but a subpage wasn't added (ie. title was blank) then we will already have updated the row in the database and we don't need to get it again, we can just send back the data that was received
+
 IF `title` != "" AND `child_title` = "" AND `id` > 0 THEN
-  -- we also send back a variable to indicate that later php scripts need to be run to update the hierarchy tree
+  
   SELECT `id` AS id, `title` AS title, `text` AS text, 1 as update_hierarchy;
 END IF;
 
--- if no form data was sent, we need to get the data for the page id that was sent
+
 IF `title` = "" AND `child_title` = "" AND `id` > 0 THEN
   SELECT `hierarchy`.`id`, `hierarchy`.`title`, `hierarchy`.`text` FROM `hierarchy` WHERE `hierarchy`.`id` = `id`;
 END IF;
@@ -60,46 +76,56 @@ END$$
 
 DELIMITER ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `hierarchy`
+--
 
 CREATE TABLE `hierarchy` (
   `id` int(11) NOT NULL,
   `parent_id` int(11) NOT NULL,
   `title` varchar(128) NOT NULL,
-  `text` text
+  `text` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `hierarchy`
+--
 
 INSERT INTO `hierarchy` (`id`, `parent_id`, `title`, `text`) VALUES
 (1, 0, 'Home page', 'This is the home page of the entire website.\r\n\r\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'),
-(49, 1, 'Colours', ''),
-(50, 49, 'red', NULL),
-(51, 49, 'green', NULL),
-(52, 49, 'blue', NULL),
-(53, 1, 'places', ''),
-(54, 53, 'UK', ''),
-(55, 54, 'England', ''),
-(56, 54, 'Wales', NULL),
-(57, 54, 'scotland', ''),
-(58, 54, 'northern ireland', NULL),
-(59, 55, 'London', ''),
-(60, 59, 'Tooting', NULL),
-(61, 59, 'hackney', NULL),
-(62, 57, 'Edinburgh', NULL),
-(63, 1, '1', ''),
-(64, 63, '2', ''),
-(65, 64, '3', ''),
-(66, 65, '4', ''),
-(67, 66, '5', ''),
-(68, 67, '6', NULL),
-(69, 1, 'cars', ''),
-(70, 69, 'porsche', NULL),
-(71, 69, 'ferrari', NULL);
+(74, 1, 'Copa America 2001', 'Hosted by Colombia \r\n\r\n\r\n[[http://www.bbc.co.uk|BBC Website]] h asjhf jlsdhbfk jsbdf khas d fkhasbdfa asd [[http://www.hello.com|HELLO magazine]]\r\nf asdf \r\nads\r\nf asdf adsf asdf asdf asdf [[https://www.theguardian.com/uk|The Guardian Website]] aldskjhf lasdf lasndf \r\n[[http://google.com|Google]] lakmsdf lkmasdlfkmas dlkfm alsdkmf als.\r\n\r\n\r\n\r\n'),
+(75, 74, 'Mexico v. Colombia', 'Final :\r\n\r\nMexico 0 Colombia 1\r\n\r\n..in Bogota'),
+(76, 75, 'Mexico v. Uruguay', 'Semi Final :\r\n\r\nMexico 1 Uruguay 0\r\n\r\n...in Pereira'),
+(77, 75, 'Honduras v. Colombia', 'Semi final :\r\n\r\nHonduras 0 Colombia 2\r\n\r\n..in Manizales'),
+(78, 76, 'Chile v. Mexico', 'Quarterfinal :\r\n\r\nChile 0 Mexico 2\r\n\r\n..in Pereira'),
+(79, 76, 'Uruguay v. Costa Rica', 'Quarterfinal :\r\n\r\nUruguay 2 Costa Rica 1\r\n\r\n..in Armenia'),
+(80, 77, 'Brazil v. Honduras', 'Quarterfinal :\r\n\r\nBrazil 0 Honduras 2\r\n\r\n..in Manizales'),
+(81, 77, 'Colombia v. Peru', 'Quarterfinal :\r\n\r\nColombia 3 Peru 0\r\n\r\n..in Armenia'),
+(83, 1, 'test', 'Here is a link\r\n\r\n[[https://www.bbc.co.uk/news|BBC News]]');
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `hierarchy`
 --
 ALTER TABLE `hierarchy`
   ADD PRIMARY KEY (`id`);
 
 --
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `hierarchy`
+--
 ALTER TABLE `hierarchy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
