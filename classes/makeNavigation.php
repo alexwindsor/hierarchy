@@ -124,8 +124,26 @@ class MakeNavigation {
     // make a preg match thing that makes html links out of [[https://www.bbc.co.uk/news|BBC News]] here
 
     $text = htmlentities($text);
-    $text = str_replace("\n", "<br>", $text);
+    $text = str_replace("\n", "<br>\n", $text);
 
+    // echo $text . "<br><br>------------------<br><br>";
+    $pattern = '/\[\[.+\|.+\]\]/i';
+
+    preg_match_all($pattern, $text, $links);
+
+    // echo "<pre>";
+    // print_r($links);
+    // echo "</pre><br><br>";
+    // die();
+
+
+    foreach($links[0] as $link_code) {
+      $data = str_replace('[[', '', $link_code);
+      $data = str_replace(']]', '', $data);
+      $link_data = explode('|', $data);
+      $link = '<a href="' . $link_data[0] . '" target="_blank">' . $link_data[1] . '</a>';
+      $text = str_replace($link_code, $link, $text);
+    }
 
     return $text;
 
